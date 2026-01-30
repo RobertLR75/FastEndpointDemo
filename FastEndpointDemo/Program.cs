@@ -1,4 +1,5 @@
 using FastEndpointDemo.Services;
+using FastEndpointDemo.Services.Interfaces;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 
@@ -9,7 +10,8 @@ builder.Services
     .SwaggerDocument(); 
 
 builder.Services.AddMemoryCache();
-builder.Services.AddScoped<IPersonStorageService, PersonStorageService>();
+builder.Services.AddSingleton<IClock, SystemClock>();
+builder.Services.AddScoped<IPersonStorageService, PersonMemoryCacheStorageService>();
 builder.Services.AddHostedService<PersonStorageInitializerService>();
 
 var app = builder.Build();
@@ -20,3 +22,8 @@ app.UseDefaultExceptionHandler()
     .UseSwaggerGen();
 app.Run();
 
+// Make Program accessible to tests
+namespace FastEndpointDemo
+{
+    public partial class Program { }
+}
