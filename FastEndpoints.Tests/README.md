@@ -30,7 +30,7 @@ The application implements a RESTful API for managing Person records with the fo
 - `POST /persons` - Create a new person
 - `GET /persons/{id:guid}` - Get a person by ID
 - `GET /persons` - Get all persons
-- `PUT /persons/{id:guid}` - Update a person
+- `PUT /persons` - Update a person (ID in request body)
 
 ### Domain Model
 

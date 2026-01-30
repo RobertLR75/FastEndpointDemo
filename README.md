@@ -11,7 +11,7 @@ FastEndpointDemo implements a complete RESTful API for managing Person records w
 - **Create Person** (`POST /persons`) - Add new persons to the system
 - **Get Person** (`GET /persons/{id}`) - Retrieve a person by their unique ID
 - **Get All Persons** (`GET /persons`) - List all persons in the system
-- **Update Person** (`PUT /persons/{id}`) - Modify existing person records
+- **Update Person** (`PUT /persons`) - Modify existing person records (ID in request body)
 
 ### Key Features
 
@@ -65,10 +65,10 @@ curl https://localhost:5001/persons
 # Get a specific person
 curl https://localhost:5001/persons/{guid}
 
-# Update a person
-curl -X PUT https://localhost:5001/persons/{guid} \
+# Update a person (ID in request body)
+curl -X PUT https://localhost:5001/persons \
   -H "Content-Type: application/json" \
-  -d '{"firstName":"Jane","lastName":"Doe"}'
+  -d '{"id":"{guid}","firstName":"Jane","lastName":"Doe"}'
 ```
 
 ## Project Structure
