@@ -1,4 +1,5 @@
 using FastEndpointDemo.Services.Models;
+using FastEndpointDemo.Services.Storage;
 
 namespace FastEndpointDemo.Services;
 

@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # Redis for distributed caching
+  redis:
+    image: redis:7-alpine
+    container_name: fastendpoint-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - fastendpoint-network
+
+  # Redis Commander - Web UI for Redis
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: fastendpoint-redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - fastendpoint-network
+
+  # MongoDB for persistent storage
+  mongodb:
+    image: mongo:7
+    container_name: fastendpoint-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=FastEndpointDemo
+    volumes:
+      - mongodb-data:/data/db
+      - mongodb-config:/data/configdb
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - fastendpoint-network
+
+  # Mongo Express - Web UI for MongoDB
+  mongo-express:
+    image: mongo-express:latest
+    container_name: fastendpoint-mongo-express
+    ports:
+      - "8082:8081"
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://mongodb:27017/
+      - ME_CONFIG_BASICAUTH=false
+    depends_on:
+      - mongodb
+    networks:
+      - fastendpoint-network
+
+volumes:
+  redis-data:
+    driver: local
+  mongodb-data:
+    driver: local
+  mongodb-config:
+    driver: local
+
+networks:
+  fastendpoint-network:
+    driver: bridge

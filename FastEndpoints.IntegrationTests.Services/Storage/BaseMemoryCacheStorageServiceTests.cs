@@ -1,13 +1,18 @@
-using FastEndpointDemo.Services;
 using FastEndpointDemo.Services.Interfaces;
-using FluentAssertions;
+using FastEndpointDemo.Services.Storage;
 using Microsoft.Extensions.Caching.Memory;
-using Xunit;
 
-namespace FastEndpoints.UnitTests.Services;
+namespace FastEndpoints.IntegrationTests.Services.Storage;
 
+/// <summary>
+/// Enhetstester for BaseMemoryCacheStorageService.
+/// Tester CRUD-operasjoner og caching-oppførsel med in-memory cache.
+/// </summary>
 public class BaseMemoryCacheStorageServiceTests
 {
+    /// <summary>
+    /// Test-entitet som brukes i alle tester.
+    /// </summary>
     private sealed record TestEntity : IEntity
     {
         public Guid Id { get; set; }
@@ -16,13 +21,22 @@ public class BaseMemoryCacheStorageServiceTests
         public string Name { get; set; } = string.Empty;
     }
 
+    /// <summary>
+    /// Konkret implementasjon av BaseMemoryCacheStorageService for testing.
+    /// </summary>
     private sealed class TestMemoryCacheStorageService(IMemoryCache cache, IClock clock) : BaseMemoryCacheStorageService<TestEntity>(cache, clock)
     {
         protected override string Name => "Test";
 
+        /// <summary>
+        /// Eksponerer index for testing.
+        /// </summary>
         public Task<List<string>> Index() => GetIndexAsync();
     }
 
+    /// <summary>
+    /// System Under Test - oppretter cache, clock og service for testing.
+    /// </summary>
     private static (MemoryCache Cache, TestClock Clock, TestMemoryCacheStorageService Service) Sut()
     {
         var cache = new MemoryCache(new MemoryCacheOptions());
@@ -31,6 +45,10 @@ public class BaseMemoryCacheStorageServiceTests
         return (cache, clock, service);
     }
 
+    /// <summary>
+    /// Verifiserer at CreateAsync genererer en ny GUID når ID er tom,
+    /// lagrer entiteten i cache, og legger til ID i index.
+    /// </summary>
     [Fact]
     public async Task CreateAsync_WhenIdEmpty_AssignsGuidAndCachesEntity_AndAddsToIndex()
     {
@@ -53,6 +71,9 @@ public class BaseMemoryCacheStorageServiceTests
         index.Should().Contain(id.ToString());
     }
 
+    /// <summary>
+    /// Verifiserer at CreateAsync beholder eksisterende ID når den er oppgitt.
+    /// </summary>
     [Fact]
     public async Task CreateAsync_WhenIdProvided_PreservesId()
     {
@@ -67,6 +88,9 @@ public class BaseMemoryCacheStorageServiceTests
         entity.Id.Should().Be(id);
     }
 
+    /// <summary>
+    /// Verifiserer at GetAsync returnerer null når entiteten ikke finnes i cache.
+    /// </summary>
     [Fact]
     public async Task GetAsync_WhenMissing_ReturnsNull()
     {
@@ -78,6 +102,9 @@ public class BaseMemoryCacheStorageServiceTests
         result.Should().BeNull();
     }
 
+    /// <summary>
+    /// Verifiserer at GetAsync returnerer entiteten når den finnes i cache.
+    /// </summary>
     [Fact]
     public async Task GetAsync_WhenExists_ReturnsEntity()
     {
@@ -93,6 +120,9 @@ public class BaseMemoryCacheStorageServiceTests
         result.Name.Should().Be("A");
     }
 
+    /// <summary>
+    /// Verifiserer at GetAllAsync returnerer tom liste når index er tom.
+    /// </summary>
     [Fact]
     public async Task GetAllAsync_WhenIndexEmpty_ReturnsEmpty()
     {
@@ -104,6 +134,10 @@ public class BaseMemoryCacheStorageServiceTests
         result.Should().BeEmpty();
     }
 
+    /// <summary>
+    /// Verifiserer at GetAllAsync filtrerer ut gamle ID-er fra index
+    /// når tilhørende entiteter ikke lenger finnes i cache.
+    /// </summary>
     [Fact]
     public async Task GetAllAsync_WhenIndexHasStaleIds_FiltersMissingEntities()
     {
@@ -122,6 +156,10 @@ public class BaseMemoryCacheStorageServiceTests
         result[0].Id.Should().Be(id);
     }
 
+    /// <summary>
+    /// Verifiserer at UpdateAsync setter UpdatedAt-tidspunkt og
+    /// overskriver eksisterende entitet i cache.
+    /// </summary>
     [Fact]
     public async Task UpdateAsync_SetsUpdatedAt_AndOverwritesCachedEntity()
     {
@@ -144,6 +182,10 @@ public class BaseMemoryCacheStorageServiceTests
         cached!.Name.Should().Be("B");
     }
 
+    /// <summary>
+    /// Verifiserer at DeleteAsync fjerner entiteten fra cache,
+    /// men lar index-oppføringen være (dokumenterer nåværende oppførsel).
+    /// </summary>
     [Fact]
     public async Task DeleteAsync_RemovesCachedEntity_ButIndexRemains()
     {
@@ -158,6 +200,10 @@ public class BaseMemoryCacheStorageServiceTests
         index.Should().Contain(id.ToString()); // documents current behavior
     }
 
+    /// <summary>
+    /// Verifiserer at CreateAsync ikke lager duplikate index-oppføringer
+    /// når den kalles flere ganger med samme ID. Siste skriving vinner.
+    /// </summary>
     [Fact]
     public async Task CreateAsync_WhenCalledTwiceWithSameId_DoesNotDuplicateIndexEntry()
     {
@@ -180,6 +226,10 @@ public class BaseMemoryCacheStorageServiceTests
         fetched!.Name.Should().Be("B");
     }
 
+    /// <summary>
+    /// Verifiserer at DeleteAsync er idempotent (kan kalles flere ganger uten feil),
+    /// og at GetAllAsync filtrerer ut manglende entiteter fra index.
+    /// </summary>
     [Fact]
     public async Task DeleteAsync_IsIdempotent_AndGetAllFiltersStaleIndexEntries()
     {

@@ -1,13 +1,18 @@
-using FastEndpointDemo.Services;
 using FastEndpointDemo.Services.Models;
-using FluentAssertions;
+using FastEndpointDemo.Services.Storage;
 using Microsoft.Extensions.Caching.Memory;
-using Xunit;
 
-namespace FastEndpoints.UnitTests.Services;
+namespace FastEndpoints.IntegrationTests.Services.Storage;
 
+/// <summary>
+/// Integrasjonstester for PersonMemoryCacheStorageService.
+/// Tester at konkret implementasjon fungerer med PersonModel.
+/// </summary>
 public class PersonMemoryCacheStorageServiceTests
 {
+    /// <summary>
+    /// Verifiserer at en person kan opprettes og hentes tilbake med alle felter intakte.
+    /// </summary>
     [Fact]
     public async Task CreateAndGet_Roundtrip_Works()
     {
@@ -28,6 +33,9 @@ public class PersonMemoryCacheStorageServiceTests
         result.CreatedAt.Should().Be(now);
     }
 
+    /// <summary>
+    /// Verifiserer at GetAll returnerer alle opprettede personer.
+    /// </summary>
     [Fact]
     public async Task GetAll_ReturnsCreatedEntities()
     {
@@ -45,6 +53,9 @@ public class PersonMemoryCacheStorageServiceTests
         persons.Select(p => p.FirstName).Should().BeEquivalentTo(new[] { "John", "Jane" });
     }
 
+    /// <summary>
+    /// Verifiserer at servicen bruker riktig navneprefiks ("Person:") for index-nøkkelen.
+    /// </summary>
     [Fact]
     public async Task NamePrefix_UsesPersonIndexKey()
     {

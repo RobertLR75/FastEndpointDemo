@@ -1,8 +1,8 @@
+using System.Collections.Concurrent;
 using FastEndpointDemo.Services.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
-using System.Collections.Concurrent;
 
-namespace FastEndpointDemo.Services;
+namespace FastEndpointDemo.Services.Storage;
 
 /// <summary>
 /// Abstrakt basisklasse for in-memory cache-basert storage av entiteter.

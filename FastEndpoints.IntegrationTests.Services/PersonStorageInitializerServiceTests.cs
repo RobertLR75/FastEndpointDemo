@@ -1,12 +1,18 @@
 using FastEndpointDemo.Services;
-using FluentAssertions;
+using FastEndpointDemo.Services.Storage;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
-namespace FastEndpoints.UnitTests.Services;
+namespace FastEndpoints.IntegrationTests.Services;
 
+/// <summary>
+/// Integrasjonstester for PersonStorageInitializerService.
+/// Tester at servicen seeder fire personer ved oppstart med ekte DI-container.
+/// </summary>
 public class PersonStorageInitializerServiceTests
 {
+    /// <summary>
+    /// Verifiserer at StartAsync seeder fire personer når den kalles med en ekte DI-container.
+    /// </summary>
     [Fact]
     public async Task StartAsync_SeedsFourPersons_UsingRealDIAndCache()
     {
@@ -32,6 +38,9 @@ public class PersonStorageInitializerServiceTests
         persons.Select(p => p.FirstName).Should().BeEquivalentTo(new[] { "John", "Jane", "Alice", "Bob" });
     }
 
+    /// <summary>
+    /// Verifiserer at StopAsync fullfører uten å kaste unntak.
+    /// </summary>
     [Fact]
     public async Task StopAsync_Completes()
     {
@@ -44,6 +53,10 @@ public class PersonStorageInitializerServiceTests
             .Should().NotThrowAsync();
     }
 
+    /// <summary>
+    /// Verifiserer at StartAsync kan kalles to ganger og seeder 8 personer totalt.
+    /// Dokumenterer nåværende oppførsel (ikke idempotent).
+    /// </summary>
     [Fact]
     public async Task StartAsync_WhenCalledTwice_SeedsTwice_DocumentsCurrentBehavior()
     {

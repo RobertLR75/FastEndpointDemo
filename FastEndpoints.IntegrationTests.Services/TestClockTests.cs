@@ -1,10 +1,14 @@
-using FluentAssertions;
-using Xunit;
+namespace FastEndpoints.IntegrationTests.Services;
 
-namespace FastEndpoints.UnitTests.Services;
-
+/// <summary>
+/// Enhetstester for TestClock.
+/// Tester at test-klokken kan settes og avanseres for tidskontroll i tester.
+/// </summary>
 public class TestClockTests
 {
+    /// <summary>
+    /// Verifiserer at UtcNow returnerer verdien gitt i konstruktøren.
+    /// </summary>
     [Fact]
     public void UtcNow_ReturnsConstructorValue()
     {
@@ -14,6 +18,9 @@ public class TestClockTests
         clock.UtcNow.Should().Be(now);
     }
 
+    /// <summary>
+    /// Verifiserer at Set endrer UtcNow til en ny verdi.
+    /// </summary>
     [Fact]
     public void Set_ChangesUtcNow_ToNewValue()
     {
@@ -25,6 +32,9 @@ public class TestClockTests
         clock.UtcNow.Should().Be(next);
     }
 
+    /// <summary>
+    /// Verifiserer at Advance med positiv varighet flytter tiden fremover.
+    /// </summary>
     [Fact]
     public void Advance_WithPositiveDuration_MovesTimeForward()
     {
@@ -36,6 +46,9 @@ public class TestClockTests
         clock.UtcNow.Should().Be(start.AddMinutes(5));
     }
 
+    /// <summary>
+    /// Verifiserer at Advance med null-varighet ikke endrer tiden.
+    /// </summary>
     [Fact]
     public void Advance_WithZeroDuration_DoesNotChangeTime()
     {
@@ -47,6 +60,9 @@ public class TestClockTests
         clock.UtcNow.Should().Be(start);
     }
 
+    /// <summary>
+    /// Verifiserer at Advance kaster unntak ved negativ varighet.
+    /// </summary>
     [Fact]
     public void Advance_WithNegativeDuration_Throws()
     {

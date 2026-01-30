@@ -1,6 +1,6 @@
 using FastEndpointDemo.Services.Interfaces;
 
-namespace FastEndpoints.UnitTests.Services;
+namespace FastEndpoints.IntegrationTests.Services;
 
 internal sealed class TestClock : IClock
 {

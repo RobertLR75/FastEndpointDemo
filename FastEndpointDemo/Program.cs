@@ -9,9 +9,7 @@ builder.Services
     .AddFastEndpoints()
     .SwaggerDocument(); 
 
-builder.Services.AddMemoryCache();
-builder.Services.AddSingleton<IClock, SystemClock>();
-builder.Services.AddScoped<IPersonStorageService, PersonMemoryCacheStorageService>();
+builder.Services.AddStorageServices(builder.Configuration);
 builder.Services.AddHostedService<PersonStorageInitializerService>();
 
 var app = builder.Build();

@@ -1,4 +1,5 @@
 using FastEndpointDemo.Services;
+using FastEndpointDemo.Services.Storage;
 using FastEndpoints;
 
 namespace FastEndpointDemo.Endpoints.Persons.Get;

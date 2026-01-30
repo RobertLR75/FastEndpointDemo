@@ -1,21 +1,25 @@
-using FastEndpointDemo.Services;
 using FastEndpointDemo.Services.Interfaces;
 using FastEndpointDemo.Services.Models;
-using FluentAssertions;
+using FastEndpointDemo.Services.Storage;
 using Microsoft.Extensions.Caching.Memory;
-using Xunit;
 
-namespace FastEndpoints.UnitTests.Services;
+namespace FastEndpoints.IntegrationTests.Services;
 
 /// <summary>
-/// "Contract" tests that assert common expectations across IStorageService implementations.
-/// These are intentionally small but help lock in service semantics.
+/// Kontrakt-tester som bekrefter felles forventninger på tvers av IStorageService-implementasjoner.
+/// Disse er bevisst små, men hjelper å låse fast service-semantikk.
 /// </summary>
 public class StorageServiceContractTests
 {
+    /// <summary>
+    /// Hjelpemetode for å opprette PersonModel med standardverdier.
+    /// </summary>
     private static PersonModel Person(string firstName = "A", string lastName = "B", Guid? id = null)
         => new() { Id = id ?? Guid.Empty, FirstName = firstName, LastName = lastName };
 
+    /// <summary>
+    /// System Under Test - oppretter cache, clock og PersonMemoryCacheStorageService for testing.
+    /// </summary>
     private static (MemoryCache Cache, TestClock Clock, IPersonStorageService Service) Sut()
     {
         var cache = new MemoryCache(new MemoryCacheOptions());
@@ -24,12 +28,18 @@ public class StorageServiceContractTests
         return (cache, clock, service);
     }
 
+    /// <summary>
+    /// Verifiserer at PersonModel implementerer IEntity-grensesnittet.
+    /// </summary>
     [Fact]
     public void PersonModel_Implements_IEntity()
     {
         typeof(PersonModel).Should().BeAssignableTo<IEntity>();
     }
 
+    /// <summary>
+    /// Verifiserer at CreateAsync genererer ID, setter CreatedAt, og lar UpdatedAt være null.
+    /// </summary>
     [Fact]
     public async Task CreateAsync_AssignsIdAndSetsCreatedAt_AndUpdatedAtIsNull()
     {
@@ -49,6 +59,9 @@ public class StorageServiceContractTests
         entity.UpdatedAt.Should().BeNull();
     }
 
+    /// <summary>
+    /// Verifiserer at CreateAsync beholder ID når den er oppgitt.
+    /// </summary>
     [Fact]
     public async Task CreateAsync_WhenIdProvided_PreservesId()
     {
@@ -63,6 +76,10 @@ public class StorageServiceContractTests
         (await service.GetAsync(id, ct)).Should().NotBeNull();
     }
 
+    /// <summary>
+    /// Verifiserer at GetAllAsync inneholder opprettet entitet, og at DeleteAsync
+    /// fjerner entiteten slik at GetAllAsync filtrerer den ut.
+    /// </summary>
     [Fact]
     public async Task GetAllAsync_ContainsCreatedEntity_AndDeleteFiltersStaleIndexEntry()
     {
@@ -81,6 +98,9 @@ public class StorageServiceContractTests
         (await service.GetAllAsync(ct)).Should().NotContain(p => p.Id == id);
     }
 
+    /// <summary>
+    /// Verifiserer at UpdateAsync overskriver entiteten og setter UpdatedAt.
+    /// </summary>
     [Fact]
     public async Task UpdateAsync_OverwritesEntityAndSetsUpdatedAt()
     {
@@ -104,6 +124,9 @@ public class StorageServiceContractTests
         updated.UpdatedAt.Should().Be(now);
     }
 
+    /// <summary>
+    /// Verifiserer at UpdateAsync ikke endrer CreatedAt-tidspunktet.
+    /// </summary>
     [Fact]
     public async Task UpdateAsync_DoesNotChangeCreatedAt()
     {
@@ -129,6 +152,9 @@ public class StorageServiceContractTests
         after.LastName.Should().Be("BB");
     }
 
+    /// <summary>
+    /// Verifiserer at storage-servicen setter forventet navneprefiks-nøkler i cache.
+    /// </summary>
     [Fact]
     public async Task StorageService_SetsExpectedNamePrefixKeys()
     {
@@ -142,6 +168,10 @@ public class StorageServiceContractTests
         cache.Get<PersonModel>($"Person:{id}").Should().NotBeNull();
     }
 
+    /// <summary>
+    /// Verifiserer at CreateAsync ikke dupliserer index-oppføring når den kalles to ganger
+    /// med samme ID, og at den overskriver cachet entitet.
+    /// </summary>
     [Fact]
     public async Task CreateAsync_WhenCalledTwiceWithSameProvidedId_DoesNotDuplicateIndex_AndOverwritesCachedEntity()
     {
@@ -166,6 +196,9 @@ public class StorageServiceContractTests
         entity.LastName.Should().Be("BB");
     }
 
+    /// <summary>
+    /// Verifiserer at CreateAsync ikke dupliserer index-oppføring når index allerede inneholder ID.
+    /// </summary>
     [Fact]
     public async Task CreateAsync_WhenIndexAlreadyContainsId_DoesNotDuplicateIndexEntry()
     {
@@ -185,6 +218,10 @@ public class StorageServiceContractTests
         index!.Should().ContainSingle(x => x == id.ToString());
     }
 
+    /// <summary>
+    /// Verifiserer at CreateAsync overskriver CreatedAt når samme ID opprettes på nytt.
+    /// Dokumenterer nåværende oppførsel.
+    /// </summary>
     [Fact]
     public async Task CreateAsync_WhenReCreatingWithSameId_OverwritesCreatedAt_DocumentsCurrentBehavior()
     {

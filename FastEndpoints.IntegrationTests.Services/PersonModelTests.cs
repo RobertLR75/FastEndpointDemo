@@ -1,11 +1,16 @@
 using FastEndpointDemo.Services.Models;
-using FluentAssertions;
-using Xunit;
 
-namespace FastEndpoints.UnitTests.Services;
+namespace FastEndpoints.IntegrationTests.Services;
 
+/// <summary>
+/// Enhetstester for PersonModel.
+/// Tester modellens egenskaper, konstruktør og record-semantikk.
+/// </summary>
 public class PersonModelTests
 {
+    /// <summary>
+    /// Hjelpemetode for å opprette PersonModel med valgfrie verdier.
+    /// </summary>
     private static PersonModel Model(
         Guid? id = null,
         DateTimeOffset? createdAt = null,
@@ -21,6 +26,9 @@ public class PersonModelTests
             LastName = lastName ?? "Doe"
         };
 
+    /// <summary>
+    /// Verifiserer at en ny PersonModel har en ikke-tom GUID som standard.
+    /// </summary>
     [Fact]
     public void NewPersonModel_HasNonEmptyId_ByDefault()
     {
@@ -29,6 +37,9 @@ public class PersonModelTests
         model.Id.Should().NotBe(Guid.Empty);
     }
 
+    /// <summary>
+    /// Verifiserer at UpdatedAt er null som standard for en ny PersonModel.
+    /// </summary>
     [Fact]
     public void NewPersonModel_UpdatedAt_IsNull_ByDefault()
     {
@@ -37,6 +48,9 @@ public class PersonModelTests
         model.UpdatedAt.Should().BeNull();
     }
 
+    /// <summary>
+    /// Verifiserer at alle egenskaper kan settes og leses korrekt.
+    /// </summary>
     [Fact]
     public void CanSetProperties()
     {
@@ -60,6 +74,9 @@ public class PersonModelTests
         model.LastName.Should().Be("Doe");
     }
 
+    /// <summary>
+    /// Verifiserer at to PersonModel-objekter med samme verdier er like (record-semantikk).
+    /// </summary>
     [Fact]
     public void RecordSemantic_TwoModelsWithSameValues_AreEqual()
     {
@@ -74,6 +91,9 @@ public class PersonModelTests
         a.GetHashCode().Should().Be(b.GetHashCode());
     }
 
+    /// <summary>
+    /// Verifiserer at endring av en egenskap påvirker likhet (record-semantikk).
+    /// </summary>
     [Fact]
     public void RecordSemantic_ChangingProperty_ChangesEquality()
     {

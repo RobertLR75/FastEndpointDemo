@@ -2,7 +2,7 @@ using FastEndpointDemo.Services.Interfaces;
 using FastEndpointDemo.Services.Models;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace FastEndpointDemo.Services;
+namespace FastEndpointDemo.Services.Storage;
 
 /// <summary>
 /// Interface for person-spesifikk storage service.
