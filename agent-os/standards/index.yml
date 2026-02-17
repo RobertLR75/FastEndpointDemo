@@ -1,0 +1,57 @@
+# Agent OS Standards Index
+
+api:
+  api-docs:
+    description: Use Scalar (not Swagger UI) for API documentation in development
+  base-event-handler:
+    description: BaseEventHandler pattern — log, transform via HandleEventAsync, republish to bus
+  exception-handling:
+    description: Global ProblemDetails exception handler via UseEndpoints(); fixed Norwegian title
+  shared-event:
+    description: ISharedEvent marker interface required for all cross-service message classes
+
+auth:
+  auth-setup:
+    description: UI apps use OIDC+cookie (ConfigureClientAuthentication); APIs use JWT Bearer (ConfigureServerAuthentication)
+  cookie-naming:
+    description: Cookie names follow {Name}_Cookie and {Name}_AuthCookie derived from OpenIdConnectSettings.Name
+  jwt-validation:
+    description: JWT validation settings — audience disabled, issuer validated, name/role claim mappings
+
+http-client:
+  base-api-client:
+    description: BaseApiClient uses Name property for both named HttpClient and URL prefix (/{Name}/{id})
+  logging-handler:
+    description: DelegatingHandler logging full request/response to stdout — dev only, never production
+  m2m-auth:
+    description: OAuth2 client credentials via Duende token management for all service-to-service calls
+
+messaging:
+  broker-configuration:
+    description: MessageBroker:Type config switches between RabbitMQ and Azure Service Bus
+  masstransit-consumer:
+    description: Extend MassTransitBaseConsumer<TEvent> for all consumers; register in AddConsumers()
+  rabbitmq-queue-naming:
+    description: Queue names follow {EventType.Name}_{ServiceName} pattern
+  rabbitmq-topology:
+    description: Producer services declare fanout exchanges on startup via RabbitMqBaseSetupService
+
+services:
+  base-publisher-service:
+    description: BasePublisherService for service-layer event publishing (vs BaseEventHandler for FastEndpoints layer)
+  base-service:
+    description: BaseService<T> wraps IStorageService with CRUD + optional domain event publishing via factory methods
+  exceptions:
+    description: ServiceException (500), ServiceNotFoundException (404), ServiceConflictException (409)
+  mappers:
+    description: BaseServiceMapper<TRequest, TResponse, TEntity> for combined mapping; registered as singletons
+
+storage:
+  entity-ids:
+    description: Use Guid.Empty on create; storage layer generates Version 7 GUIDs automatically
+  mongodb-patterns:
+    description: CollectionName convention, full document replace on update, EnsureIndexesAsync at startup
+  redis-key-naming:
+    description: Redis keys follow {Name}:{id}; Name is lowercase plural noun, unique per entity type
+  storage-backends:
+    description: MongoDB for durable business data; Redis for ephemeral/cache data; may be combined
