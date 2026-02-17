@@ -10,30 +10,22 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastEndpoints.IntegrationTe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "agent-os", "agent-os", "{916CA338-1B22-4FF5-A23F-32C898E49773}"
 	ProjectSection(SolutionItems) = preProject
-		agent-os\standards\auth\jwt-validation.md = agent-os\standards\auth\jwt-validation.md
-		agent-os\standards\auth\cookie-naming.md = agent-os\standards\auth\cookie-naming.md
-		agent-os\standards\auth\auth-setup.md = agent-os\standards\auth\auth-setup.md
-		agent-os\standards\storage\entity-ids.md = agent-os\standards\storage\entity-ids.md
-		agent-os\standards\storage\redis-key-naming.md = agent-os\standards\storage\redis-key-naming.md
-		agent-os\standards\storage\storage-backends.md = agent-os\standards\storage\storage-backends.md
-		agent-os\standards\storage\mongodb-patterns.md = agent-os\standards\storage\mongodb-patterns.md
-		agent-os\standards\http-client\m2m-auth.md = agent-os\standards\http-client\m2m-auth.md
-		agent-os\standards\http-client\base-api-client.md = agent-os\standards\http-client\base-api-client.md
-		agent-os\standards\http-client\logging-handler.md = agent-os\standards\http-client\logging-handler.md
-		agent-os\standards\api\api-docs.md = agent-os\standards\api\api-docs.md
-		agent-os\standards\api\base-event-handler.md = agent-os\standards\api\base-event-handler.md
-		agent-os\standards\api\exception-handling.md = agent-os\standards\api\exception-handling.md
-		agent-os\standards\api\shared-event.md = agent-os\standards\api\shared-event.md
-		agent-os\standards\messaging\broker-configuration.md = agent-os\standards\messaging\broker-configuration.md
-		agent-os\standards\messaging\rabbitmq-topology.md = agent-os\standards\messaging\rabbitmq-topology.md
-		agent-os\standards\messaging\rabbitmq-queue-naming.md = agent-os\standards\messaging\rabbitmq-queue-naming.md
-		agent-os\standards\messaging\masstransit-consumer.md = agent-os\standards\messaging\masstransit-consumer.md
 		agent-os\standards\index.yml = agent-os\standards\index.yml
-		agent-os\standards\services\base-publisher-service.md = agent-os\standards\services\base-publisher-service.md
-		agent-os\standards\services\exceptions.md = agent-os\standards\services\exceptions.md
-		agent-os\standards\services\base-service.md = agent-os\standards\services\base-service.md
-		agent-os\standards\services\mappers.md = agent-os\standards\services\mappers.md
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "standards", "standards", "{71C2B136-5488-4829-AF29-21EF17121072}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{C1611D7C-3616-421B-BDFF-796D30F42E21}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "auth", "auth", "{B7678ED9-3626-4E9F-91A0-2B29517DF903}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "http-client", "http-client", "{901E6F44-072C-4E74-BB34-98329986DCF5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "messaging", "messaging", "{C7B6CEAA-D08E-426F-8419-ED0FA1A6CE8A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{09F91F58-7D02-4F8C-B46B-3377BA140DCF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "storage", "storage", "{1311799B-673C-48A1-9DB0-33084504B9AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,5 +49,14 @@ Global
 		{265C991B-E8A0-4C1F-9858-A30D4F35C462}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{265C991B-E8A0-4C1F-9858-A30D4F35C462}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{265C991B-E8A0-4C1F-9858-A30D4F35C462}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{71C2B136-5488-4829-AF29-21EF17121072} = {916CA338-1B22-4FF5-A23F-32C898E49773}
+		{C1611D7C-3616-421B-BDFF-796D30F42E21} = {71C2B136-5488-4829-AF29-21EF17121072}
+		{B7678ED9-3626-4E9F-91A0-2B29517DF903} = {71C2B136-5488-4829-AF29-21EF17121072}
+		{901E6F44-072C-4E74-BB34-98329986DCF5} = {71C2B136-5488-4829-AF29-21EF17121072}
+		{C7B6CEAA-D08E-426F-8419-ED0FA1A6CE8A} = {71C2B136-5488-4829-AF29-21EF17121072}
+		{09F91F58-7D02-4F8C-B46B-3377BA140DCF} = {71C2B136-5488-4829-AF29-21EF17121072}
+		{1311799B-673C-48A1-9DB0-33084504B9AD} = {71C2B136-5488-4829-AF29-21EF17121072}
 	EndGlobalSection
 EndGlobal
